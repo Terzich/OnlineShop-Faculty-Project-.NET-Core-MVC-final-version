@@ -1,0 +1,140 @@
+﻿@model EditOrderVM
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var a = TempData["msg"] as string;
+}
+    <style>
+        
+        input[type=text] {
+        /*width: 25%;*/
+        padding: 7px 4px;
+        margin: 8px 0 2px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+                         
+     label {
+        display: inline-block;
+        width: 140px;
+        text-align: left;
+    }
+    </style>
+
+
+ <h3 style="color:red">@a</h3>
+<p>Detalji narudžbe</p>
+<br />
+<form id="forma">
+    <div class="block">
+        <label>Narudžba rb</label>
+        <input type="text" asp-for="OrderID" readonly value="@Model.OrderID " /> <br />
+    </div> <br />
+    <div class="block">
+        <label>Datum narudžbe</label>
+        <input type="text" asp-for="OrderDate" readonly value="@Model.OrderDate" /> <br />
+    </div> <br />
+    <div class="block">
+        <label>Korisnik</label>
+        <input type="text" readonly value="@Model.UserInfo " /> <br />
+    </div> <br />
+    <div class="block">
+        <label>Status narudžbe</label>
+        <input type="text" readonly value="@Model.OrderStatus" /> <br />
+    </div> <br />
+
+    <table border="1">
+
+        @for (var i = 0; i < Model.items.Count(); i++)
+        {
+            <tr style="background-color: #696969; color: #fff">
+
+                <th>ID proizvoda</th>
+                <th>Naziv proizvoda</th>
+                <th>Zahtjevana količina</th>
+            </tr>
+            <tr>
+                @*@Html.LabelFor(model=>model.items[i].ProductID)*@
+                <td>@Html.TextBoxFor(model => model.items[i].ProductID, new { @readonly = "readonly", @type = "number" })</td>
+                @*<input readonly asp-for="@x.ProductID" value="@x.ProductID" />*@
+                <td><a style="color:black;" href="javascript:void(0)" onclick="location.href='/Product/ProductDetails?ID=@Model.items[i].ProductID'">@Model.items[i].ProductName</a></td>
+                <td>@Html.TextBoxFor(model => model.items[i].RequiredQuantity, new { @readonly = "readonly", @type = "number" })</td>
+            </tr>
+            @if (Model.OrderStatus != "Shipped" && Model.OrderStatus != "Cancelled")
+            {
+                <tr style="background-color: #969696; color: #fff"><th>Rb poslovnice</th><th>Poslovnica</th> <th>Stanje proizvoda</th> <th>Oduzmi od stanja</th></tr>
+                if (Model.items[i].branches.Any())
+                {
+                    for (int j = 0; j < Model.items[i].branches.Count(); j++)
+
+                    {
+                        <tr>
+                            <td><input type="number" readonly asp-for="@Model.items[i].branches[j].BranchID" value="@Model.items[i].branches[j].BranchID" /> </td>
+                            <td>@Model.items[i].branches[j].BranchName</td>
+                            <td>@Html.TextBoxFor(model => model.items[i].branches[j].AvailableQuantity, new { @readonly = "readonly",@type = "number" })</td> @if (Model.items[i].branches[j].AvailableQuantity > Model.items[i].RequiredQuantity)
+                            {
+                                <td><input type="number" min="0" max="@Model.items[i].RequiredQuantity" asp-for="@Model.items[i].branches[j].Input" /></td>
+                            }
+                            else
+                            {
+                                <td><input type="number" min="0" max="@Model.items[i].branches[j].AvailableQuantity" asp-for="@Model.items[i].branches[j].Input" /></td>
+                            }
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td><a href="javascript:void(0)" title="Proizvod nije dostupan niti u jednoj poslovnici. Raspodjelite isti sa skladišta !" onclick="location.href='/Product/DistributeProduct?productID='+@Model.items[i].ProductID">Raspodjeli !</a></td></tr>
+                }
+            }
+
+        }
+    </table>
+
+    @if (Model.items.Any(s => s.branches.Count == 0) || Model.OrderStatus == "Shipped" || Model.OrderStatus == "Cancelled")
+    {
+        {<button disabled type="submit" onclick="SaveChanges()" id="btn">Odobri narudžbu za slanje</button>
+        }
+    }
+    else
+    {
+        <button type="button" id="btn">Odobri narudžbu za slanje</button>} <br />
+
+    @if (Model.OrderStatus == "Shipped" || Model.OrderStatus == "Cancelled")
+    {<button disabled type="button" id="cancel">Poništi narudžbu</button>}
+    else
+    {<button type="button" id="cancel">Poništi narudžbu</button>}
+    <button type="button" onclick="location.href='/Administration/ShowOrders'">Nazad</button>
+</form>
+    
+
+
+<script>
+
+    $("#btn").click(function () {
+        var form = $("#forma");
+        $.ajax({
+            type: "POST",
+            url: "/Administration/SaveOrderChanges",
+            data: form.serialize(),
+            success: function (res) {
+                $("#table").html(res);
+            }
+        });
+    });
+    $("#cancel").click(function () {
+        $.get("/Administration/CancelOrder?orderid=@Model.OrderID", function (res) {
+            $("#table").html(res);
+        });
+
+    });
+
+
+</script>
+
+
+
+

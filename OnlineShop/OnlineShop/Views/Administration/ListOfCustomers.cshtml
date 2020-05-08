@@ -1,0 +1,89 @@
+﻿@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+
+
+@{
+    ViewData["Title"] = "Lista registrovanih korisnika";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model IPagedList<ListOfCustomersVM>
+<style>
+    .pagination-container{
+        padding:10px;
+        margin:auto;
+        width:50%;
+    }
+    .pagination-container ul{
+       
+        width:50%;
+        margin:auto;
+        height:55px;
+        text-align:center;
+        padding-left:14%;
+
+    }
+    .pagination-container ul li {
+        font-size:30px;
+        background-color:transparent;
+        height:40px;
+        margin-top:7px;
+        padding:0 10px 10px 10px;
+        border:1px solid #000000;
+        
+        }
+        .pagination-container ul li a {
+            color:red;
+            margin:auto;
+            
+        }
+    
+</style>
+
+
+<h3 class="text-center">Lista svih registrovanih korisnika</h3>
+
+
+<div class="row">
+
+    @{
+        if (Model.Any())
+        {
+            foreach (var c in Model)
+            {
+                <div class="col-md-4 col-sm-4">
+
+
+                    <div class="card m-3">
+                        <div class="card-header text-center text-danger">@c.Firstname @c.LastName</div>
+
+                        <div class="card-body text-center">
+                            @{
+                                if (c.ImageUrl != null)
+                                {
+                                    <img class="card-img-top" src="~/images/@c.ImageUrl" style="width:100px" />
+
+                                }
+                                else
+                                {
+                                    <img class="card-img-top" src="~/images/USER.png" style="width:100px" />
+                                }
+                            }
+                        </div>
+
+                        <div class="card-footer text-center">
+                            <a href="/Administration/UserDetails?id=@c.Id" class="btn btn-primary">Detalji</a>
+                            <a href="/Administration/SetForAdmin?id=@c.Id" class="btn btn-danger">Dodijeli admina</a>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            }
+        }
+
+    }
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("ListOfCustomers", new { page}))

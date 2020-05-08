@@ -1,0 +1,152 @@
+﻿@using OnlineShopPodaci.Model;
+@using OnlineShop.ViewModels;
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+
+@model IPagedList<OnlineShop.ViewModels.ShowSubCategoriesVM>
+
+
+@{
+    ViewData["Title"] = "ShowSubcategories";
+}
+
+
+@*<h1>@Model.First().CategoryName</h1>*@
+<br />
+
+<style>
+    #maindiv {
+        width: 23%;
+        float: left;
+        margin: 10px;
+        padding: 0px;
+        border-radius: 5px;
+        height: 230px;
+        margin-left:35px;
+        border: 1px solid rgba(0,0,0,.125);
+    }
+
+        #maindiv:hover {
+            opacity: 0.9;
+        }
+
+    #test {
+        width: 42%;
+        margin: auto;
+        margin-bottom: 15px;
+    }
+
+    
+
+    #content {
+        width: 75%;
+        margin: auto;
+        float: left;
+    }
+
+    #lijevinav{
+        width:20%;
+        float:left;
+        height:615px;
+    }
+
+    #imagediv {
+        width: auto;
+        height: 170px;
+        display: flex;
+        height: 180px;
+    }
+
+    #header {
+        height: 60px;
+    }
+        
+    #slika {
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        width: auto\9;
+        object-fit: cover;
+        margin: auto;
+    }
+
+    #slika2{
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        width: auto\9;
+        object-fit: cover;
+        margin-left:65px;
+        margin-top:5px;
+    }
+    .pagination-container{
+        padding:10px;
+        margin:auto;
+        width:50%;
+    }
+    .pagination-container ul{
+       
+        width:50%;
+        margin:auto;
+        height:55px;
+        text-align:center;
+        padding-left:14%;
+
+    }
+    .pagination-container ul li {
+        font-size:30px;
+        background-color:transparent;
+        height:40px;
+        margin-top:7px;
+        padding:0 10px 10px 10px;
+        border:1px solid #000000;
+        
+        }
+        .pagination-container ul li a {
+            color:black;
+            margin:auto;
+            
+        }
+
+
+
+</style>
+
+<div id="lijevinav">
+
+    <img id="slika2" src="~/images/side3.PNG" />
+</div>
+
+
+<div id="content">
+
+<h5>@ViewBag.Name</h5>
+
+@foreach (var x in Model)
+{
+    <a href="/Product/ShowProducts?ID=@x.SubCategoryID" &string="">
+
+        <div id="maindiv" class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div id="imagediv">
+
+                    <img id="slika" src="~/images/@x.imageurl" alt="">
+                </div>
+
+                <div id="header">
+                    <div class="card-body">
+                        <h4 style=" color: blue; text-align: center;" class="card-title">
+                            @x.SubCategoryName
+                        </h4>
+                    </div>
+                </div>
+            </div>
+</a>
+}
+
+<div id='paging' style="text-align: center">
+
+    @Html.PagedListPager(Model, page => Url.Action("ShowSubCategories", new { page, Model[0].ID }))
+</div>
+
+</div>

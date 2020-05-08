@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewData["Title"] = "ProductDetails2";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+
+<br />
+<h1>Detalji proizvoda</h1>
+<br />
+@model ProductDetails2VM
+
+<form>
+    <input asp-for="productID" hidden />
+
+    <p>Naziv proizvoda</p>
+    <input class="form form-control" asp-for="productName" readonly />
+    <br />
+
+    <p>Proizvođač</p>
+    <input class="form form-control" asp-for="manufacturer" readonly />
+    <br />
+
+    <p>Kategorija</p>
+    <input class="form form-control" asp-for="categoryName" readonly />
+    <br />
+
+    <p>Podkategorija</p>
+    <input class="form form-control" asp-for="subCategoryName" readonly />
+    <br />
+
+    <p>Cijena</p>
+    <input class="form form-control" asp-for="productPrice" readonly />
+    <br />
+
+    <p>Količina</p>
+    <input class="form form-control" asp-for="quantity" readonly />
+
+
+</form>
+
+<br /><br />
+<button id="show" class="btn btn-primary" type="submit">...</button>
+<br /><br />
+
+<div id="divID" >
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#show").click(function () {
+
+            if ($(this).val() == "Prikazi") {
+                $("#divID").show();
+                $(this).val("Uvuci");
+
+                $.get("/Branch/AdminOptions?productID=@Model.productID", function (rezultat, status) {
+                    $("#divID").html(rezultat);
+                });
+            }
+            else
+            {
+                $("#divID").hide();
+                $(this).val("Prikazi");
+            }
+        });
+    });
+</script>

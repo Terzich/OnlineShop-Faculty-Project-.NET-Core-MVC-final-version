@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewData["Title"] = "ShowStock";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<br />
+<h2>Prikaz proizvoda na skladištu</h2>
+
+@model List<ShowProductsInStockVM>
+
+<style>
+    #test {
+        width: 42%;
+        margin: auto;
+        margin-bottom: 15px;
+    }
+</style>
+
+<br />
+<div id="test">
+
+    <form method="get" asp-action="ShowStock"  asp-route-search="search">
+
+
+        <input type="search" placeholder="Unesite naziv proizvoda" value="@ViewData["data"]" name="search" style="width:300px" />
+        <input type="submit" class="btn btn-dark" value="Pretraži" />
+
+    </form>
+
+</div>
+<br />
+
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Naziv proizvoda</th>
+            <th>Cijena po komadu</th>
+            <th>Količina</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model)
+        {
+            if (i.Quantity > 0)
+            {
+                <tr>
+                    <td>@i.ProductName</td>
+                    <td>@i.Price  KM</td>
+                    <td>@i.Quantity  kom.</td>
+                    <td>
+                        <a class="btn btn-primary" href="/Product/DistributeProduct?productID=@i.ProductID">Raspodjeli</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,59 @@
+﻿@using OnlineShopPodaci.Model;
+
+@model List<ShowProductForManage>
+
+@{
+    ViewData["Title"] = "Show";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+
+<style>
+    #test {
+        width: 42%;
+        margin: auto;
+        margin-bottom: 15px;
+    }
+</style>
+
+<br />
+<h2>Prikaz svih proizvoda</h2>
+<br />
+<div id="test">
+
+    <form method="get" asp-action="Show" asp-route-search="search">
+
+        <p @ViewBag.ID />
+
+        <input type="search" placeholder="Unesite šifru ili naziv proizvoda" value="@ViewData["data"]" name="search" style="width:300px" />
+        <input type="submit" class="btn btn-dark" value="Pretraži" />
+
+    </form>
+
+</div>
+<table class="table table-striped">
+    <tr>
+        <th>Šifra proizvoda</th>
+        <th>Naziv podkategorije</th>
+        <th>Naziv proizvođača</th>
+        <th>Naziv proizvoda</th>
+        <th>Opis</th>
+        <th>Cijena</th>
+    </tr>
+
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>@p.ProductNumber</td>
+            <td>@p.SubCategoryName</td>
+            <td>@p.ManufacturerName</td>
+            <td>@p.ProductName</td>
+            <td>@p.Description</td>
+            <td>@p.UnitPrice</td>
+            <td>
+                <a class="btn btn-warning" href="/Product/AddProduct?ProductID=@p.ProductID">Izmjeni</a>
+            </td>
+        </tr>
+    }
+</table>
+<br />
